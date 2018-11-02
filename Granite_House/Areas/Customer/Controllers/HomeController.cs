@@ -10,6 +10,7 @@ namespace Granite_House.Controllers
 {
     public class HomeController : Controller
     {
+        [Area("Customer")]
         public IActionResult Index()
         {
             return View();
