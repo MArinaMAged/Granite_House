@@ -84,5 +84,64 @@ namespace Granite_House.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        //GET Products Edit
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            ProductsVM.Products = await _db.Products.Include(m => m.SpecialTags).Include(m => m.ProductTypes).SingleOrDefaultAsync(m => m.Id == id);
+            if (ProductsVM.Products == null)
+                return NotFound();
+
+            return View(ProductsVM);
+        }
+
+        //POST Products Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if(ModelState.IsValid)
+            {
+                string webRootPath = _hostingEnvironment.WebRootPath;
+                IFormFileCollection files = HttpContext.Request.Form.Files;
+
+                Products productFromDb = _db.Products.Where(p => p.Id == ProductsVM.Products.Id).FirstOrDefault();
+
+                if(files != null && files.Count>0 && files[0] != null && files[0].Length>0)
+                {
+                    //if user uploads a new image
+                    string uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                    var extension_new = Path.GetExtension(files[0].FileName);
+                    var extension_old = Path.GetExtension(productFromDb.Image);
+
+                    if (System.IO.File.Exists(Path.Combine(uploads, ProductsVM.Products.Id + extension_old)))
+                        System.IO.File.Delete(Path.Combine(uploads, ProductsVM.Products.Id + extension_old));
+
+                    using (var fileStream = new FileStream(Path.Combine(uploads, ProductsVM.Products.Id + extension_new), FileMode.Create))
+                    {
+                        files[0].CopyTo(fileStream);
+                    }
+
+                    ProductsVM.Products.Image = @"\" + SD.ImageFolder + @"\" + ProductsVM.Products.Id + extension_new;
+                }
+
+                productFromDb.Name = ProductsVM.Products.Name;
+                productFromDb.Price = ProductsVM.Products.Price;
+                productFromDb.Available = ProductsVM.Products.Available;
+                productFromDb.ProductTypeId = ProductsVM.Products.ProductTypeId;
+                productFromDb.SpecialTagsId = ProductsVM.Products.SpecialTagsId;
+                productFromDb.ShadeColor = ProductsVM.Products.ShadeColor;
+                if (ProductsVM.Products.Image != null)
+                    productFromDb.Image = ProductsVM.Products.Image;
+                await _db.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(ProductsVM);
+        }
     }
 }
