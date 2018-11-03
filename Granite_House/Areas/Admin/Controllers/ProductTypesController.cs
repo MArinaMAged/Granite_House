@@ -86,5 +86,30 @@ namespace Granite_House.Areas.Admin.Controllers
                 return NotFound();
             return View(productType);
         }
+
+        //GET Delete Action Method
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+            ProductTypes productType = await _db.ProductTypes.FindAsync(id);
+            if (productType == null)
+                return NotFound();
+            return View(productType);
+        }
+
+        //POST Delete Action Method
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            ProductTypes productTypes = await _db.ProductTypes.FindAsync(id);
+            if (productTypes == null)
+                return NotFound();
+            _db.ProductTypes.Remove(productTypes);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
