@@ -75,5 +75,16 @@ namespace Granite_House.Areas.Admin.Controllers
 
             return View(productTypes);
         }
+
+        //GET Details Action Method
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+            ProductTypes productType = await _db.ProductTypes.FindAsync(id);
+            if (productType == null)
+                return NotFound();
+            return View(productType);
+        }
     }
 }
