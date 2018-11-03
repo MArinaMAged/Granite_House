@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Granite_House.Models.Products>
+@{
+    ViewData["Title"] = "Products";
+}
+
+<br /> <br />
+
+<div class="row">
+    <div class="col-6">
+        <h2 class="text-info">Products list</h2>
+    </div>
+    <div class="col-6 text-right">
+        <a asp-action="Create" class="btn btn-info"><i class="fas fa-plus"></i>&nbsp; New product</a>
+    </div>
+</div>
+
+<br />
+
+<div>
+    <table class="table table-striped border">
+        <tr class="table-info">
+            <th>
+                @Html.DisplayNameFor(pt => pt.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(pt => pt.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(pt => pt.Available)
+            </th>
+            <th>
+                @Html.DisplayNameFor(pt => pt.ProductTypes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(pt => pt.SpecialTags)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(pt => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(pt => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(pt => item.Available)
+            </td>
+            <td>
+                @Html.DisplayFor(pt => item.ProductTypes.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(pt => item.SpecialTags.Name)
+            </td>
+            <td>
+                <partial name="_TableButtonPartial" model="@item.Id" />
+            </td>
+        </tr>
+        }
+    </table>
+</div>
