@@ -10,7 +10,7 @@
         <h2 class="text-info">Product type list</h2>
     </div>
     <div class="col-6 text-right">
-        <a asp-action="Create" class="btn btn-info">&nbsp; New product type</a>
+        <a asp-action="Create" class="btn btn-info"><i class="fas fa-plus"></i>&nbsp; New product type</a>
     </div>
 </div>
 
@@ -31,7 +31,7 @@
                     @Html.DisplayFor(pt=>item.Name)
                 </td>
                 <td>
-                    EDIT | DELETE | UPDATE
+                    <partial name="_TableButtonPartial" model="@item.Id"/>
                 </td>
             </tr>
         }
