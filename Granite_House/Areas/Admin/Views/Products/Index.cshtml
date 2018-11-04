@@ -44,7 +44,7 @@
                 @Html.DisplayFor(pt => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(pt => item.Price)
+                @String.Format("{0:c0}/m²", item.Price)
             </td>
             <td>
                 @Html.DisplayFor(pt => item.Available)
@@ -53,7 +53,10 @@
                 @Html.DisplayFor(pt => item.ProductTypes.Name)
             </td>
             <td>
-                @Html.DisplayFor(pt => item.SpecialTags.Name)
+                @if (!item.SpecialTags.Name.Equals("--None--"))
+                {
+                     @Html.DisplayFor(pt => item.SpecialTags.Name)
+                }
             </td>
             <td>
                 <partial name="_TableButtonPartial" model="@item.Id" />
