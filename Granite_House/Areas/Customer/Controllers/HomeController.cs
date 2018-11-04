@@ -5,29 +5,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Granite_House.Models;
+using Granite_House.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Granite_House.Controllers
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
-        [Area("Customer")]
-        public IActionResult Index()
+
+        private readonly ApplicationDbContext _db;
+
+        public HomeController(ApplicationDbContext db)
         {
-            return View();
+            _db = db;
         }
+            
 
-        public IActionResult About()
+        public async Task<IActionResult> Index()
         {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
+            IEnumerable<Products> productList = await _db.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).ToListAsync();
+            return View(productList);
         }
 
         public IActionResult Privacy()
