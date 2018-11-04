@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Granite_House.Models;
 using Granite_House.Data;
 using Microsoft.EntityFrameworkCore;
+using Granite_House.Extensions;
 
 namespace Granite_House.Controllers
 {
@@ -34,6 +35,32 @@ namespace Granite_House.Controllers
             Products product = await _db.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).Where(p => p.Id == id).FirstOrDefaultAsync();
             return View(product);
         }
+
+        // POST Details
+        [HttpPost, ActionName("Details")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DetailsPost(int id)
+        {
+            List<int> lstShoppingCart = HttpContext.Session.Get<List<int>>("ssShoppingCart");
+            if (lstShoppingCart == null)
+                lstShoppingCart = new List<int>();
+            lstShoppingCart.Add(id);
+            HttpContext.Session.Set("ssShoppingCart", lstShoppingCart);
+
+            return RedirectToAction("Index", "Home", new { area = "Customer" });
+        }
+
+        public IActionResult Remove(int id)
+        {
+            List<int> lstShoppingCart = HttpContext.Session.Get<List<int>>("ssShoppingCart");
+            if (lstShoppingCart.Count > 0 && lstShoppingCart.Contains(id))
+                lstShoppingCart.Remove(id);
+
+            HttpContext.Session.Set("ssShoppingCart", lstShoppingCart);
+
+            return RedirectToAction("Index", "Home", new { area = "Customer" });
+        }
+
 
         public IActionResult Privacy()
         {
