@@ -5,7 +5,7 @@
 }
 
 <br />
-<h2 class="text-info">Edit product type</h2>
+<h2 class="text-info">Edit product</h2>
 
 <form method="post" enctype="multipart/form-data">
     <div class="p-4 border rounded row">
@@ -68,7 +68,7 @@
                     <label asp-for="Products.Available"></label>
                 </div>
                 <div class="col-8">
-                    <input type="checkbox" asp-for="Products.Available" class="form-control" />
+                    <input type="checkbox" asp-for="Products.Available" />
                 </div>
                 <span asp-validation-for="Products.Available" class="text-danger"></span>
             </div>
