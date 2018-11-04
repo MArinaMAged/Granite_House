@@ -28,6 +28,13 @@ namespace Granite_House.Controllers
             return View(productList);
         }
 
+        // GET Details
+        public async Task<IActionResult> Details(int id)
+        {
+            Products product = await _db.Products.Include(p => p.ProductTypes).Include(p => p.SpecialTags).Where(p => p.Id == id).FirstOrDefaultAsync();
+            return View(product);
+        }
+
         public IActionResult Privacy()
         {
             return View();
