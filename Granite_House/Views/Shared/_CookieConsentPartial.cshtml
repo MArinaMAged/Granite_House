@@ -8,16 +8,16 @@
 
 @if (showBanner)
 {
-    <nav id="cookieConsent" class="navbar navbar-default navbar-fixed-top" role="alert">
+    <nav id="cookieConsent" class="navbar" role="alert">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cookieConsent .navbar-collapse">
+                <button type="button" data-toggle="collapse" data-target="#cookieConsent .navbar-collapse">
                     <span class="sr-only">Toggle cookie consent banner</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <span class="navbar-brand"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></span>
+                <span class="navbar-brand"><span aria-hidden="true"></span></span>
             </div>
             <div class="collapse navbar-collapse">
                 <p class="navbar-text">
@@ -32,6 +32,7 @@
     </nav>
     <script>
         (function () {
+
             document.querySelector("#cookieConsent button[data-cookie-string]").addEventListener("click", function (el) {
                 document.cookie = el.target.dataset.cookieString;
                 document.querySelector("#cookieConsent").classList.add("hidden");
