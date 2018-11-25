@@ -53,5 +53,28 @@ namespace Granite_House.Areas.Admin.Controllers
 
             return View(applicationUser);
         }
+
+        //Get Delete
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null || id.Trim().Length == 0)
+                return NotFound();
+
+            var userFromDb = await _db.ApplicationUsers.FindAsync(id);
+            if (userFromDb == null)
+                return NotFound();
+            return View(userFromDb);
+        }
+
+        //Post Delete
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(string id)
+        {
+            ApplicationUser userFromDb = _db.ApplicationUsers.Where(p => p.Id == id).FirstOrDefault();
+            userFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
+            _db.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
