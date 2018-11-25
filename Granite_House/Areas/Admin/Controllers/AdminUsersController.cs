@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Granite_House.Data;
 using Granite_House.Models;
+using Granite_House.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Granite_House.Areas.Admin.Controllers
 {
+    [Authorize(Roles = SD.SuperAdminEndUser)]
     [Area("Admin")]
     public class AdminUsersController : Controller
     {
