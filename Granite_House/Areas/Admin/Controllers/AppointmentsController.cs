@@ -130,5 +130,38 @@ namespace Granite_House.Areas.Admin.Controllers
 
             return View(appointmentVM);
         }
+
+        //GET Delete
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            IEnumerable<Models.Products> productList = (IEnumerable<Models.Products>)(from p in _db.Products
+                                                                                      join a in _db.ProductsSelectedForAppointment
+                                                                                      on p.Id equals a.ProductId
+                                                                                      where a.AppointmentId == id
+                                                                                      select p).Include("ProductTypes");
+            AppointmentDetailsViewModel appointmentVM = new AppointmentDetailsViewModel()
+            {
+                Appointment = _db.Appointments.Include(a => a.SalesPerson).Where(p => p.Id == id).FirstOrDefault(),
+                SalesPerson = _db.ApplicationUsers.ToList(),
+                Products = productList.ToList()
+            };
+
+            return View(appointmentVM);
+        }
+
+        //POST Delete
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var appointmentFromDb = await _db.Appointments.FindAsync(id);
+            _db.Appointments.Remove(appointmentFromDb);
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

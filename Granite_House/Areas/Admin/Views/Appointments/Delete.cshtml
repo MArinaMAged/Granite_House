@@ -1,0 +1,97 @@
+﻿@model Granite_House.Models.ViewModels.AppointmentDetailsViewModel
+@using Granite_House.Extensions
+@using Granite_House.Utility
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<br />
+<h2 class="text-info">Delete Appointment</h2>
+<br />
+<h4>Are you want to delete this appointment?</h4>
+
+<form method="post">
+    <div class="p-4 border rounded row">
+        <input hidden asp-for="Appointment.Id" />
+        <div class="col-6">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.CustomerName"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Appointment.CustomerName" readonly class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.CustomerEmail"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Appointment.CustomerEmail" readonly class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.CustomerPhoneNumber"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Appointment.CustomerPhoneNumber" readonly class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.AppointmentDate"></label>
+                </div>
+                <div class="col-8">
+                    <input id="datepicker" type="text" readonly asp-for="Appointment.AppointmentDate" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.AppointmentTime"></label>
+                </div>
+                <div class="col-8">
+                    <input id="timepicker" type="text" readonly asp-for="Appointment.AppointmentTime" class="timepicker form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.SalesPerson"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="@Model.Appointment.SalesPerson.Name" readonly class="form-control" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Appointment.isConfirmed"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Appointment.isConfirmed" readonly />
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <partial name="~/Views/Shared/_AppointmentProductDetails.cshtml" model="Model.Products" />
+        </div>
+        <br />
+        <div class="form-group">
+            <input type="submit" class="btn btn-danger" asp-route-id="@Model.Appointment.Id" value="Delete" />
+            <a asp-action="Index" class="btn btn-success">Back to list</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var appointmentTime = document.getElementById('datepicker').value;
+            console.log(appointmentTime);
+            var date = appointmentTime.substring(0, 14);
+            var time = appointmentTime.substring(14, appointmentTime.length - 3);
+            $('#datepicker').attr('value', date);
+            $('#timepicker').attr('value', time);
+        });
+    </script>
+}
