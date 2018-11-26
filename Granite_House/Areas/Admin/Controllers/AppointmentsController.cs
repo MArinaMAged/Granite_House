@@ -60,5 +60,53 @@ namespace Granite_House.Areas.Admin.Controllers
 
             return View(appointmentVM);
         }
+
+        //GET Edit
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            IEnumerable<Models.Products> productList = (IEnumerable<Models.Products>)(from p in _db.Products
+                                                                                   join a in _db.ProductsSelectedForAppointment
+                                                                                   on p.Id equals a.ProductId
+                                                                                   where a.AppointmentId == id
+                                                                                   select p).Include("ProductTypes");
+            AppointmentDetailsViewModel appointmentVM = new AppointmentDetailsViewModel()
+            {
+                Appointment = _db.Appointments.Include(a => a.SalesPerson).Where(p => p.Id == id).FirstOrDefault(),
+                SalesPerson = _db.ApplicationUsers.ToList(),
+                Products = productList.ToList()
+            };
+
+            return View(appointmentVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, AppointmentDetailsViewModel objAppointmentVM)
+        {
+            if(ModelState.IsValid)
+            {
+                objAppointmentVM.Appointment.AppointmentDate = objAppointmentVM.Appointment.AppointmentDate
+                    .AddHours(objAppointmentVM.Appointment.AppointmentTime.Hour)
+                    .AddMinutes(objAppointmentVM.Appointment.AppointmentTime.Minute);
+
+                var appointmentFromDb = _db.Appointments.Where(p => p.Id == objAppointmentVM.Appointment.Id).FirstOrDefault();
+
+                appointmentFromDb.CustomerName = objAppointmentVM.Appointment.CustomerName;
+                appointmentFromDb.CustomerEmail = objAppointmentVM.Appointment.CustomerEmail;
+                appointmentFromDb.CustomerPhoneNumber = objAppointmentVM.Appointment.CustomerPhoneNumber;
+                appointmentFromDb.AppointmentDate = objAppointmentVM.Appointment.AppointmentDate;
+                appointmentFromDb.isConfirmed = objAppointmentVM.Appointment.isConfirmed;
+                if (User.IsInRole(SD.SuperAdminEndUser))
+                    appointmentFromDb.SalesPersonId = objAppointmentVM.Appointment.SalesPersonId;
+                _db.SaveChanges();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(objAppointmentVM);
+        }
     }
 }
