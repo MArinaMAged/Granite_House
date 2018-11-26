@@ -120,9 +120,6 @@
             console.log(appointmentTime);
             var date = appointmentTime.substring(0, 14);
             var time = appointmentTime.substring(14, appointmentTime.length-3);
-
-            console.log(date);
-            console.log(time);
             $('#datepicker').attr('value', date);
             $('#timepicker').attr('value', time);
         });

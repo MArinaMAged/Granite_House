@@ -82,6 +82,7 @@ namespace Granite_House.Areas.Admin.Controllers
             return View(appointmentVM);
         }
 
+        //POST Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AppointmentDetailsViewModel objAppointmentVM)
@@ -107,6 +108,27 @@ namespace Granite_House.Areas.Admin.Controllers
             }
 
             return View(objAppointmentVM);
+        }
+
+        //GET Details
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            IEnumerable<Models.Products> productList = (IEnumerable<Models.Products>)(from p in _db.Products
+                                                                                      join a in _db.ProductsSelectedForAppointment
+                                                                                      on p.Id equals a.ProductId
+                                                                                      where a.AppointmentId == id
+                                                                                      select p).Include("ProductTypes");
+            AppointmentDetailsViewModel appointmentVM = new AppointmentDetailsViewModel()
+            {
+                Appointment = _db.Appointments.Include(a => a.SalesPerson).Where(p => p.Id == id).FirstOrDefault(),
+                SalesPerson = _db.ApplicationUsers.ToList(),
+                Products = productList.ToList()
+            };
+
+            return View(appointmentVM);
         }
     }
 }
