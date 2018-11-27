@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Granite_House.Data;
 using Granite_House.Models.ViewModels;
@@ -17,13 +18,14 @@ namespace Granite_House.Areas.Admin.Controllers
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private int PageSize =2;
 
         public AppointmentsController(ApplicationDbContext db)
         {
             _db = db;
         }
 
-        public async Task<IActionResult> Index(string searchName=null, string searchEmail=null, string searchPhone=null, string searchDate=null)
+        public async Task<IActionResult> Index(int productPage = 1, string searchName=null, string searchEmail=null, string searchPhone=null, string searchDate=null)
         {
             System.Security.Claims.ClaimsPrincipal currentUser = this.User;
             ClaimsIdentity claimsIdentity = (ClaimsIdentity)this.User.Identity;
@@ -57,6 +59,38 @@ namespace Granite_House.Areas.Admin.Controllers
 
                 }
             }
+
+            /* Lapozás */
+            var count = appointmentVM.Appointments.Count;
+
+            StringBuilder param = new StringBuilder();
+            param.Append("/Admin/Appointments?productPage=:");
+            param.Append("&searchName=");
+            if (!String.IsNullOrEmpty(searchName))
+                param.Append(searchName);
+            param.Append("&searchEmail=");
+            if (!String.IsNullOrEmpty(searchEmail))
+                param.Append(searchEmail);
+            param.Append("&searchPhone=");
+            if (!String.IsNullOrEmpty(searchPhone))
+                param.Append(searchPhone);
+            param.Append("&searchDate=");
+            if (!String.IsNullOrEmpty(searchDate))
+                param.Append(searchDate);
+
+            appointmentVM.Appointments = appointmentVM.Appointments.OrderBy(p => p.AppointmentDate)
+                .Skip((productPage - 1) * PageSize).Take(PageSize).ToList();
+
+            appointmentVM.PagingInfo = new Models.PagingInfo()
+            {
+                CurrentPage = productPage,
+                ItemsPerPage = PageSize,
+                TotalItems = count,
+                urlParam = param.ToString()
+            };
+
+
+            /* Lapozás vége */
 
             return View(appointmentVM);
         }
