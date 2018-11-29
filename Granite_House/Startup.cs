@@ -38,6 +38,8 @@ namespace Granite_House
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
+            services.AddScoped<IDbInit, DbInit>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddSession(options =>
@@ -48,7 +50,7 @@ namespace Granite_House
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDbInit dbInit)
         {
             if (env.IsDevelopment())
             {
@@ -64,6 +66,8 @@ namespace Granite_House
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            dbInit.Initialize();
 
             app.UseAuthentication();
             app.UseSession();
