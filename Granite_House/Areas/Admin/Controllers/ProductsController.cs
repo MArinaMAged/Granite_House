@@ -55,6 +55,10 @@ namespace Granite_House.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
                 return View(ProductsVM);
+            if (_db.Products.Count() > 0)
+                ProductsVM.Products.Id = _db.Products.Max(p => p.Id) + 1;
+            else
+                ProductsVM.Products.Id = 1;
             _db.Products.Add(ProductsVM.Products);
             await _db.SaveChangesAsync();
             Products productsFromDb = _db.Products.Find(ProductsVM.Products.Id);

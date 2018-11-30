@@ -38,6 +38,11 @@ namespace Granite_House.Areas.Admin.Controllers
         {
             if(ModelState.IsValid)
             {
+                if (_db.ProductTypes.Count() > 0)
+                    productTypes.Id = _db.ProductTypes.Max(p => p.Id) + 1;
+                else
+                    productTypes.Id = 1;
+
                 _db.Add(productTypes);
                 await _db.SaveChangesAsync();
 

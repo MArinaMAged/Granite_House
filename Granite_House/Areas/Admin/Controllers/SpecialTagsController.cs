@@ -37,6 +37,10 @@ namespace Granite_House.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_db.SpecialTags.Count() > 0)
+                    specialTags.Id = _db.SpecialTags.Max(p => p.Id) + 1;
+                else
+                    specialTags.Id = 1;
                 _db.Add(specialTags);
                 await _db.SaveChangesAsync();
 

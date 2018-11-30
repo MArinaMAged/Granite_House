@@ -57,6 +57,11 @@ namespace Granite_House.Areas.Customer.Controllers
                 .AddHours(ShoppingCartVM.Appointments.AppointmentTime.Hour)
                 .AddMinutes(ShoppingCartVM.Appointments.AppointmentTime.Minute);
             Appointments appointments = ShoppingCartVM.Appointments;
+            if (_db.Appointments.Count() > 0)
+                appointments.Id = _db.Appointments.Max(p => p.Id) + 1;
+            else
+                appointments.Id = 1;
+
             _db.Appointments.Add(appointments);
             _db.SaveChanges();
 
@@ -69,7 +74,10 @@ namespace Granite_House.Areas.Customer.Controllers
                     AppointmentId = appointmentId,
                     ProductId = productId
                 };
-
+                if (_db.ProductsSelectedForAppointment.Count() > 0)
+                    productsSelectedForAppointment.Id = _db.ProductsSelectedForAppointment.Max(p => p.Id) + 1;
+                else
+                    productsSelectedForAppointment.Id = 1;
                 _db.ProductsSelectedForAppointment.Add(productsSelectedForAppointment);
             }
 
