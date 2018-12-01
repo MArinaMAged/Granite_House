@@ -2,13 +2,13 @@
 
 <td style="width:150px;">
     <div class="btn-group" role="group">
-        <a type="button" class="btn btn-primary" title="Edit" href="@Url.Action("Edit/"+Model)">
+        <a type="button" class="btn btn-primary" title="Edit" href="@Url.Action("Edit", new { Id = Model } )">
             <i class="fas fa-edit"></i>
         </a>
-        <a type="button" class="btn btn-success" title="Details" href="@Url.Action("Details/"+Model)">
+        <a type="button" class="btn btn-success" title="Details" href="@Url.Action("Details", new { Id = Model })">
             <i class="fas fa-list-ul"></i>
         </a>
-        <a type="button" class="btn btn-danger" title="Delete" href="@Url.Action("Delete/"+Model)">
+        <a type="button" class="btn btn-danger" title="Delete" href="@Url.Action("Delete", new { Id = Model })">
             <i class="far fa-trash-alt"></i>
         </a>
     </div>

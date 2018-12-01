@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="btn-group">
-                            <label style="font-size: 20px; color: #a51313"><b>@String.Format("{0:c0}/m²", product.Price)</b></label>
+                            <label style="font-size: 20px; color: #a51313"><b>@String.Format("{0:n0}Ft/m²", product.Price)</b></label>
                         </div>
                         <a asp-action="Details" asp-controller="Home" asp-route-id="@product.Id" class="btn btn-success pull-right btn-outline-info">View Details</a>
                     </div>

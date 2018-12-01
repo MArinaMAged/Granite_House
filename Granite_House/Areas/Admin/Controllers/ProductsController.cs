@@ -23,11 +23,13 @@ namespace Granite_House.Areas.Admin.Controllers
         [BindProperty]
         public ProductsViewModel ProductsVM { get; set; }
 
+        private string dirSep;
+
         public ProductsController(ApplicationDbContext db, HostingEnvironment hostingEnvironment)
         {
             _db = db;
             _hostingEnvironment = hostingEnvironment;
-
+            dirSep = Path.DirectorySeparatorChar.ToString();
             ProductsVM = new ProductsViewModel()
             {
                 ProductTypes = _db.ProductTypes.OrderBy(p=>p.Name).ToList(),
@@ -69,22 +71,22 @@ namespace Granite_House.Areas.Admin.Controllers
             if (files.Count!=0)
             {
                 //files has been uploaded
-                string uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                string uploads = webRootPath + dirSep + SD.ImageFolder;
                 string extension = Path.GetExtension(files[0].FileName);
 
-                using (var fileStream = new FileStream(Path.Combine(uploads, ProductsVM.Products.Id + extension), FileMode.Create))
+                using (var fileStream = new FileStream(uploads + dirSep + ProductsVM.Products.Id + extension, FileMode.Create))
                 {
                     files[0].CopyTo(fileStream);
                 }
 
-                productsFromDb.Image = @"\" + SD.ImageFolder + @"\" + ProductsVM.Products.Id + extension;
+                productsFromDb.Image = dirSep + SD.ImageFolder + dirSep + ProductsVM.Products.Id + extension;
             }
             else
             {
                 //when user doesn't upload image
-                string uploads = Path.Combine(webRootPath, SD.ImageFolder+@"\"+SD.DefaultProductImage);
-                System.IO.File.Copy(uploads, webRootPath + @"\" + SD.ImageFolder + @"\" + ProductsVM.Products.Id + ".jpg");
-                productsFromDb.Image = @"\" + SD.ImageFolder + @"\" + ProductsVM.Products.Id + ".jpg";
+                string uploads = webRootPath + dirSep + SD.ImageFolder+ dirSep + SD.DefaultProductImage;
+                System.IO.File.Copy(uploads, webRootPath + dirSep + SD.ImageFolder + dirSep + ProductsVM.Products.Id + ".jpg");
+                productsFromDb.Image = dirSep + SD.ImageFolder + dirSep + ProductsVM.Products.Id + ".jpg";
             }
             await _db.SaveChangesAsync();
 
@@ -119,19 +121,19 @@ namespace Granite_House.Areas.Admin.Controllers
                 if(files != null && files.Count>0 && files[0] != null && files[0].Length>0)
                 {
                     //if user uploads a new image
-                    string uploads = Path.Combine(webRootPath, SD.ImageFolder);
+                    string uploads = webRootPath + dirSep + SD.ImageFolder;
                     var extension_new = Path.GetExtension(files[0].FileName);
                     var extension_old = Path.GetExtension(productFromDb.Image);
 
-                    if (System.IO.File.Exists(Path.Combine(uploads, ProductsVM.Products.Id + extension_old)))
-                        System.IO.File.Delete(Path.Combine(uploads, ProductsVM.Products.Id + extension_old));
+                    if (System.IO.File.Exists(uploads + dirSep + ProductsVM.Products.Id + extension_old))
+                        System.IO.File.Delete(uploads + dirSep + ProductsVM.Products.Id + extension_old);
 
-                    using (var fileStream = new FileStream(Path.Combine(uploads, ProductsVM.Products.Id + extension_new), FileMode.Create))
+                    using (var fileStream = new FileStream(uploads + dirSep + ProductsVM.Products.Id + extension_new, FileMode.Create))
                     {
                         files[0].CopyTo(fileStream);
                     }
 
-                    ProductsVM.Products.Image = @"\" + SD.ImageFolder + @"\" + ProductsVM.Products.Id + extension_new;
+                    ProductsVM.Products.Image = dirSep + SD.ImageFolder + dirSep + ProductsVM.Products.Id + extension_new;
                 }
 
                 productFromDb.Name = ProductsVM.Products.Name;

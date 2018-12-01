@@ -1,0 +1,26 @@
+version: '2.0'
+
+services:
+  postgresqlserver:
+    restart: always
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: pgp4ssw0rd
+    volumes:
+    - pg-datavolume:/var/lib/postgresql
+
+  granite_house:
+    image: granite_house
+    restart: always
+    ports:
+    - "8003:80"
+    links:
+    - postgresqlserver
+    volumes:
+    - gh-wwwroot:/app/wwwroot/images/ProductImage
+
+volumes:
+  pg-datavolume:
+  gh-wwwroot:
+
+
